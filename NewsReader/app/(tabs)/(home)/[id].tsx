@@ -1,8 +1,15 @@
 // app/(tabs)/(home)/[id].tsx
 
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { ARTICLES } from "../../../data/articles";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,12 +31,37 @@ export default function ArticleDetail() {
 
     const article = ARTICLES.find((a) => a.id === id);
 
+    const [bookmarked, setBookmarked] = useState<boolean>(false);
+
+const toggleBookmark = () => {
+  setBookmarked((previous) => !previous);
+};
+
     // Update the Stack header title once we have the article
     useEffect(() => {
         if (article) {
             navigation.setOptions({ title: article.title });
         }
     }, [article]);
+
+    
+useEffect(() => {
+  navigation.setOptions({
+    headerRight: () => (
+      <Pressable
+        onPress={toggleBookmark}
+        style={{ marginRight: 16 }}
+      >
+        <Ionicons
+          name={bookmarked ? "bookmark" : "bookmark-outline"}
+          size={24}
+          color="#FFFFFF"
+        />
+      </Pressable>
+    ),
+  });
+}, [bookmarked, navigation]);
+
 
     if (!article) {
         return (
